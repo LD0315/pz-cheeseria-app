@@ -27,7 +27,7 @@ const Cart: React.FC<Props> = ({ cartItems, addToCart, removeFromCart, onPurchas
         />
       ))}
       <h2>Total: ${calculateTotal(cartItems).toFixed(2)}</h2>
-      <Button onClick={(e:any)=> onPurchase()} type="button">Purchase Items</Button>
+      <Button onClick={(e:any)=> onPurchase()} data-cy="purchase-button" type="button">Purchase Items</Button>
     </Wrapper>
   );
 };
