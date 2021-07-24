@@ -12,6 +12,8 @@ import Badge from '@material-ui/core/Badge';
 // Styles
 import { Wrapper, StyledButton, StyledAppBar, HeaderTypography } from './App.styles';
 import { AppBar, Toolbar, Typography } from '@material-ui/core';
+import ItemDetails from './Cart/Item/ItemDetails';
+import Recents from './Cart/Item/Recents';
 // Types
 export type CartItemType = {
   id: number;
@@ -27,6 +29,30 @@ export type CartItemType = {
 const getCheeses = async (): Promise<CartItemType[]> =>
   await (await fetch(`api/cheeses`)).json();
 
+
+
+const purchaseItems = async (items:CartItemType[]): Promise<any> => {
+  var data2 =  {name:"linlin", items:items};
+
+fetch(`api/purchase`, {
+  method:'POST',
+  headers: {
+    'Content-Type': 'application/json'
+    // 'Content-Type': 'application/x-www-form-urlencoded',
+  },
+  body:JSON.stringify(data2)
+}).then((data) => data.json()).then((data) => console.log('data', data));
+
+  /*await (await fetch(`api/handle`, {
+    method:'POST',
+    headers: {
+      'Content-Type': 'application/json'
+      // 'Content-Type': 'application/x-www-form-urlencoded',
+    },
+    body:JSON.stringify(data)
+  })).json();*/
+}
+
 const App = () => {
   const [cartOpen, setCartOpen] = useState(false);
   const [cartItems, setCartItems] = useState([] as CartItemType[]);
@@ -34,7 +60,16 @@ const App = () => {
     'cheeses',
     getCheeses
   );
+
+  const [recents, setRecents] = useState([] as CartItemType[]);
+
+  //console.log("xxxx",purchaseItems());
   console.log(data);
+
+    const [sItem, setSItem] = useState({} as CartItemType);
+    const [open, setOpen] = useState(false);
+    const [recentOpen, setRecentOpen] = useState(false);
+
 
   const getTotalItems = (items: CartItemType[]) =>
     items.reduce((ack: number, item) => ack + item.amount, 0);
@@ -56,6 +91,37 @@ const App = () => {
     });
   };
 
+  const onItemClick = (item: CartItemType) => {
+    console.log(item);
+
+    setSItem(item);
+    setOpen(true);
+  };
+  const recentPurchases = () => {
+    fetch(`api/recents`).then((res:any) => {
+      console.log("first then", res);
+      return res.json();}).then((its:CartItemType[]) =>{
+        console.log("second then", its);
+        setRecents(its);
+    });
+  };
+  const onRecentPurchsedClick = () => {
+      recentPurchases();
+      setRecentOpen(true);
+  };
+
+  const handleClose = () =>{
+    setOpen(false);
+  };
+
+  const handleRecentClose = () =>{
+    setRecentOpen(false);
+  };
+
+  const setItem = (item:CartItemType) => {
+    console.log("set item func");
+  };
+
   const handleRemoveFromCart = (id: number) => {
     setCartItems(prev =>
       prev.reduce((ack, item) => {
@@ -69,12 +135,23 @@ const App = () => {
     );
   };
 
+
+  const handlePurchaseClick = () => {
+    purchaseItems(cartItems).then((data) => console.log("xx", data));
+
+    setCartItems([]);
+  };
+
+
+
   if (isLoading) return <LinearProgress />;
   if (error) return <div>Something went wrong ...</div>;
 
   return (
 
     <Wrapper>
+      <ItemDetails name="linlin" open={open} item={sItem} handleClose={handleClose} />
+      <Recents open={recentOpen} items={recents} handleClose={handleRecentClose} />
       <StyledAppBar position="static">
         <Toolbar>
           <Grid
@@ -83,7 +160,7 @@ const App = () => {
             justify="space-between"
             alignItems="center"
           >
-            <StyledButton>
+            <StyledButton onClick={(e)=> onRecentPurchsedClick()}>
               <RestoreIcon />
               <Typography variant="subtitle2">
                 Recent Purchases
@@ -116,13 +193,14 @@ const App = () => {
           cartItems={cartItems}
           addToCart={handleAddToCart}
           removeFromCart={handleRemoveFromCart}
+          onPurchase={handlePurchaseClick}
         />
       </Drawer>
 
       <Grid container spacing={3}>
         {data?.map(item => (
           <Grid item key={item.id} xs={12} sm={4}>
-            <Item item={item} handleAddToCart={handleAddToCart} />
+            <Item item={item} handleAddToCart={handleAddToCart} handleClick={onItemClick}/>
           </Grid>
         ))}
       </Grid>

@@ -7,11 +7,12 @@ import { Wrapper } from './Item.styles';
 type Props = {
   item: CartItemType;
   handleAddToCart: (clickedItem: CartItemType) => void;
+  handleClick: (clickedItem: CartItemType) => void;
 };
 
-const Item: React.FC<Props> = ({ item, handleAddToCart }) => (
+const Item: React.FC<Props> = ({ item, handleAddToCart, handleClick }) => (
   <Wrapper>
-    <img src={item.image} alt={item.title} />
+    <img src={item.image} alt={item.title} onClick={() => handleClick(item)}/>
     <div>
       <h3>{item.title}</h3>
       <h3>${item.price}</h3>
@@ -23,3 +24,4 @@ const Item: React.FC<Props> = ({ item, handleAddToCart }) => (
 );
 
 export default Item;
+
