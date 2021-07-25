@@ -10,8 +10,6 @@ import { CartItemType } from '../../App';
 
 
 type Props = {
-
-
   setItem: (clickedItem: CartItemType) => void;
 };
 
@@ -20,10 +18,6 @@ var _open = false;
 export default function Recents(props:any) {
 
   console.log(props);
-
-
-
-
 
   const items = props.items;
   _open = props.open;

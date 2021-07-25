@@ -34,9 +34,6 @@ export default function ItemDetails(props:any) {
   console.log(props);
 
 
-
-
-
   const item = props.item;
   _open = props.open;
    /*const handleClickOpen = () => {
@@ -44,8 +41,6 @@ export default function ItemDetails(props:any) {
   };*/
 
    const handleClose = props.handleClose;
-
-
 
   //render() {
   return (

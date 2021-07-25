@@ -25,11 +25,8 @@ export type CartItemType = {
   amount: number;
 };
 
-
 const getCheeses = async (): Promise<CartItemType[]> =>
   await (await fetch(`api/cheeses`)).json();
-
-
 
 const purchaseItems = async (items:CartItemType[]): Promise<any> => {
   var data2 =  {name:"linlin", items:items};
